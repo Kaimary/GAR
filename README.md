@@ -8,7 +8,7 @@ GAR: A Generate-and-Rank Approach for Natural Language to SQL Translation
 
 # Training
 ## GAR can be trained with the following command:
-> bash train\_pipeline.sh <dataset_name> <train_data_path> <dev_data_path> <table_path> <db_dir> <serialization_num> <is_overwrite_serialization> "nli-distilroberta-base-v2" "roberta-base" "bertpooler"
+> bash train\_pipeline.sh <dataset_name> <train_data_path> <dev_data_path> <table_path> <db_dir>
 
 The training includes four phasees:
 1. Retrieval model training data generation. <em>Please note that this phase expects to take some time to generate a large set of SQL-dialect pairs for each training databases.</em>
@@ -17,7 +17,7 @@ The training includes four phasees:
 4. Re-ranking model training
 
 # Inference
-> bash test\_pipeline.sh <dataset_name>  <test_file_path> <table_path> <db_dir> <serialization_num> <rerank_candidate_num> <is_overwrite_serialization> "stsb-mpnet-base-v2" "roberta-base" "bertpooler" <gold_sql_file> "False"
+> bash test\_pipeline.sh <dataset_name>  <test_file_path> <test_gold_sql_file> <table_path> <db_dir>
 
 # License
 This project is licensed under the GPL-3.0 license.
