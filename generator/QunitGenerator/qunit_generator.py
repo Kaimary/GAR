@@ -17,8 +17,8 @@ from synthesizer.DialectSynthesizer.dialect_synthesizer import DialectSynthesize
 from generator.QunitGenerator.qunit.unit_extract import extract_spider_unit
 from generator.QunitGenerator.utils import sql_nested_query_tmp_name_convert
 from utils.evaluation.evaluate import build_foreign_key_map_from_json, rebuild_sql
-from utils.evaluation.process_sql import get_schema, get_schema_from_json, tokenize
-from utils.spider_utils import DBSchema, disambiguate_items2, get_all_schema, read_single_dataset_schema
+from utils.evaluation.process_sql import get_schema, get_schema_from_json
+from utils.spider_utils import DBSchema, get_all_schema, read_single_dataset_schema
 
 class QunitSQLGenerator(abstract_generator.AbstractSQLGenerator):
     def __init__(self, dataset_name, data_file, tables_file, db_dir, generation_num):
@@ -47,7 +47,7 @@ class QunitSQLGenerator(abstract_generator.AbstractSQLGenerator):
         if not os.path.exists(DIR_PATH + QUNITS_FILE.format(self.dataset_name)):
             print(
                 f"Not found query units file! Please check if the file path setting is correct: "
-                f"{QUNITS_FILE.format(self.dataset_nameß)}")
+                f"{QUNITS_FILE.format(self.dataset_name)}")
             print(f"Extract the query units...")
             extract_spider_unit(self.dataset_name, self.tables_file, self.data_file, db_path=self.db_dir)
             print(f"Extract the query units complete!")

@@ -7,18 +7,18 @@ from synthesizer.DialectSynthesizer.dialect_synthesizer import DialectSynthesize
 from configs.config import DIR_PATH, GENERATION_NUM, OVERWRITE_FLAG, SERIALIZE_DATA_DIR
 
 def main():
-    dataset_name = 'geo'
-    tables_file = 'sqlgenv2/datasets/geo/tables.json'
-    db_dir = 'sqlgenv2/datasets/geo/database'
-    output_dir = 'output/'
-    serialization(dataset_name, 'sqlgenv2/datasets/geo/train.json', tables_file, db_dir, output_dir)
-    serialization(dataset_name, 'sqlgenv2/datasets/geo/dev.json', tables_file, db_dir, output_dir)
-    serialization(dataset_name, 'sqlgenv2/datasets/geo/test.json', tables_file, db_dir, output_dir)
+    dataset_name = 'spider'
+    tables_file = 'datasets/spider/tables.json'
+    db_dir = 'datasets/spider/database'
+    output_dir = 'saved_data/'
+    # serialization(dataset_name, 'datasets/spider/gap_predicts.txt', tables_file, db_dir, output_dir)
+    # serialization(dataset_name, 'sqlgenv2/datasets/geo/dev.json', tables_file, db_dir, output_dir)
+    serialization(dataset_name, 'datasets/spider/dev_model_output.json', tables_file, db_dir, output_dir)
 
     return
 
 def serialization(
-        dataset_name, file_path, tables_file, db_dir, output_dir):
+        dataset_name, data_file, tables_file, db_dir, output_dir):
     # Initialization
     sqls = []
     dialects = []
@@ -27,9 +27,11 @@ def serialization(
     generator = QunitSQLGenerator(dataset_name, data_file, tables_file, db_dir, generation_num=GENERATION_NUM)
     synthesizer = DialectSynthesizer(tables_file, db_dir)
     # Use to check miss rate for each of the phase
-    checker = RecallChecker(file_path, tables_file, db_dir, output_dir)
+    checker = RecallChecker(data_file, tables_file, db_dir, output_dir)
 
-    with open(file_path, "r") as data_file:
+    serialization_dir = f'{DIR_PATH}{SERIALIZE_DATA_DIR.format(dataset_name)}'
+    if not os.path.exists(serialization_dir): os.makedirs(serialization_dir)
+    with open(data_file, "r") as data_file:
         data = json.load(data_file)
         for ex in data:
             num_total_count += 1
@@ -39,7 +41,7 @@ def serialization(
             if pre_db_id == "" or pre_db_id != db_id:
                 # Generate synthesis sql-dialects
                 pre_db_id = db_id
-                db_data_path = f'{DIR_PATH}{SERIALIZE_DATA_DIR.format(dataset_name)}/{pre_db_id}_{GENERATION_NUM}.txt'
+                db_data_path = f'{serialization_dir}/{pre_db_id}_{GENERATION_NUM}.txt'
                 if not os.path.exists(db_data_path) or OVERWRITE_FLAG:
                     generator.switch_database(db_id)         
                     generator.switch_context()                                            

@@ -952,9 +952,9 @@ class SpiderPattern(object):
 #                 type=click.Path(exists=True, dir_okay=False))
 # @click.argument("sql_file", default='sqlgenv2/datasets/spider/train_dev_spider.json',
 #                 type=click.Path(exists=True, dir_okay=False))
-def extract_spider_unit(dataset='spider', schema_file='sqlgenv2/datasets/spider/tables.json',
-                        sql_file='sqlgenv2/datasets/spider/train_dev_spider.json',
-                        db_path='sqlgenv2/datasets/spider/database/'):
+def extract_spider_unit(dataset='spider', schema_file='datasets/spider/tables.json',
+                        sql_file='datasets/spider/train_dev_spider.json',
+                        db_path='datasets/spider/database/'):
     db_schemas = get_all_schema(schema_file)
     spider_patterns = dict()
     spider_set_cover = dict()
