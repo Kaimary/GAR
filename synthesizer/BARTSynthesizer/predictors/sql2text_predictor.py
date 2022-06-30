@@ -1,17 +1,10 @@
-from copy import deepcopy
-from typing import List, Dict
-
-from overrides import overrides
-import numpy
 import json
-from allennlp.common.util import JsonDict, sanitize
-
+from typing import List
+from overrides import overrides
 from allennlp.common.util import JsonDict
-from allennlp.data import DatasetReader, Instance
 from allennlp.models import Model
+from allennlp.data import DatasetReader, Instance
 from allennlp.predictors.predictor import Predictor
-from allennlp.data.fields import LabelField
-
 
 @Predictor.register("sql2text_predictor")
 class TextClassifierPredictor(Predictor):
@@ -20,9 +13,6 @@ class TextClassifierPredictor(Predictor):
         self.query = ''
         self.question = ''
         
-
-    # def predict(self, sentence: str) -> JsonDict:
-    #     return self.predict_json({"sentence": sentence})
 
     @overrides
     def load_line(self, line: str) -> JsonDict:
@@ -45,14 +35,7 @@ class TextClassifierPredictor(Predictor):
     def predict_instance(self, instance: Instance) -> JsonDict:
         self._dataset_reader.apply_token_indexers(instance)
         outputs = self._model.forward_on_instance(instance)
-        outputs_show = {}
-        # outputs_show["db_id"] = self.db_id
-        # outputs_show["sql"] = self.query
         return outputs["predicted_text"]
-        # outputs_show["nl_gold"] = self.question
-        
-        
-        # return sanitize(outputs_show)
 
     def predict(self, sql: str) -> JsonDict:
         return self.predict_json({"query": sql})

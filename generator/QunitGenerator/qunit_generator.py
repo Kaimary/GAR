@@ -43,6 +43,12 @@ class QunitSQLGenerator(abstract_generator.AbstractSQLGenerator):
         self.kmaps = build_foreign_key_map_from_json(tables_file)
     
     def switch_context(self, *args):
+        # Clear the existing context first
+        self.qunits = []
+        self.syntax_constraint = {}
+        self.skeletons = []
+        self.combinatorial_rule_base = deepcopy(COMBINATORIAL_RULE_DICTIONARY)
+        
         # Read query units of the database
         if not os.path.exists(DIR_PATH + QUNITS_FILE.format(self.dataset_name)):
             print(
@@ -574,6 +580,7 @@ class QunitSQLGenerator(abstract_generator.AbstractSQLGenerator):
                             # We use dialect as the key to check if current SQL has the same dialect ever.
                             # If so, we will compare and use the shortest one.
                             self.synthesizer.switch_database(self.db_name)
+                            # print(f"sql:{sql}")
                             dialect = self.synthesizer.synthesize(sql)
                             if dialect not in dialect_sql_dict.keys():
                                 dialect_sql_dict[dialect] = index
