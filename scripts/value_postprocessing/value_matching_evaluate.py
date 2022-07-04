@@ -45,7 +45,7 @@ def main(tables_file, db_dir, value_filtered_output_file, output_file):
             labels = ex['labels']
             nl = ex['question']
             candidates = ex['candidates']
-            candidate_sqls: List[str] = ex['candidate_sqls']
+            candidate_sqls: List[str] = [sql.strip() for sql in ex['candidate_sqls']]
             top_sqls = []
             top_dialects = []
             top_sqls_index = map(lambda x: candidate_sqls.index(x), pred)

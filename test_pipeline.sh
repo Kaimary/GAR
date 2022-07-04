@@ -59,7 +59,7 @@ VALUE_FILTERED_OUTPUT_TOPK_SQL_FILE=${RERANKER_OUTPUT_FILE/.txt/_sql_topk_value_
 # Generate test data for reranker
 if [ ! -f $RERANKER_INPUT_FILE ]; then
     echo "ACTION REPORT: Generate re-ranker test data into $RERANKER_INPUT_FILE"
-    python3 -m scripts.reranker_script $DATASET_NAME $TEST_FILE $TABLES_FILE $DB_DIR $OUTPUT_DIR
+    python3 -m scripts.reranker_train_test_script $DATASET_NAME $TEST_FILE $TABLES_FILE $DB_DIR $OUTPUT_DIR
     echo "RESULT REPORT: Re-ranker test data is ready now!"
     echo "=================================================================="
 else

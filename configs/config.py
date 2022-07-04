@@ -8,7 +8,7 @@ QUNITS_SET_COVER_MINUS_FILE = '/saved_data/{0}/qunits_set_generated_cover.json'
 # Retrieval Model Knobs
 RETRIEVAL_MODEL_TRAIN_BATCH_SIZE=15
 RETRIEVAL_MODEL_DIMENSION = 768
-RETRIEVAL_MODEL_NAME = 'nli-distilroberta-base-v2'
+RETRIEVAL_MODEL_NAME = 'stsb-mpnet-base-v2'
 RETRIEVAL_MODEL_DIR = '/saved_data/{0}/retrieval_model'
 RETRIEVAL_MODEL_TRAIN_DATA_GZ_FILE = '/saved_data/{0}/retrieval_model/train_dev.tsv.gz'
 RETRIEVAL_MODEL_DATA_FINETUNE_GZ_FILE = '/saved_data/{0}/retrieval_model/finetune.tsv.gz'
@@ -46,7 +46,7 @@ REWRITE_FLAG=False
 # Overwrite flag for the serialized generation data 
 # (True to make any change in SQLGenV2 gets effected)
 OVERWRITE_FLAG=False
-SQLGEN_DEBUG_FLAG=False
+SQLGEN_DEBUG_FLAG=True
 RETREVAL_DEBUG_FLAG=True
 # Toggle to enable/disable using annotations during dialect generation
-USE_ANNOTATION=True
+USE_ANNOTATION=False

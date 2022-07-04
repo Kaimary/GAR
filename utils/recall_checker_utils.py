@@ -96,6 +96,7 @@ class RecallChecker():
         if not gold_sql_indices:
             self.total_candidategen_miss_count += 1
             #print(f"self.total_candidategen_miss_count:{self.total_candidategen_miss_count}")
+            self.total_candidategen_miss_sqls[db_id].append(gold_sql)
             cur_miss = {}
             cur_miss['gold_sql'] = gold_sql
             cur_miss['gold_dialect'] = gold_dialect
@@ -140,7 +141,7 @@ class RecallChecker():
         print(f"Total count:{total}; Total missing sql count: {miss}@{candidate_num}")
         print(f"Candidate generation miss rate: {miss / total}")
 
-    def export_sqlgen_miss(self, filename):
+    def export_sqlgen_miss(self):
         filename  = os.path.join(self.output_dir, "sqlgen_miss_sqls.json")
         with open(filename, 'w') as f:
             f.write(f"Total sqlgen miss count:{self.total_sqlgen_miss_count}\n")

@@ -13,7 +13,7 @@ def main():
     output_dir = 'saved_data/'
     # serialization(dataset_name, 'datasets/spider/gap_predicts.txt', tables_file, db_dir, output_dir)
     # serialization(dataset_name, 'sqlgenv2/datasets/geo/dev.json', tables_file, db_dir, output_dir)
-    serialization(dataset_name, 'datasets/spider/dev_model_output.json', tables_file, db_dir, output_dir)
+    serialization(dataset_name, 'datasets/spider/smbop_dev_output.json', tables_file, db_dir, output_dir)
 
     return
 
@@ -43,6 +43,7 @@ def serialization(
                 pre_db_id = db_id
                 db_data_path = f'{serialization_dir}/{pre_db_id}_{GENERATION_NUM}.txt'
                 if not os.path.exists(db_data_path) or OVERWRITE_FLAG:
+                    print(f"db_id:{db_id}")
                     generator.switch_database(db_id)         
                     generator.switch_context()                                            
                     sqls = generator.generate()
@@ -65,7 +66,7 @@ def serialization(
                 # Read from the existing file
 
     checker.print_sqlgen_total_result(num_total_count, GENERATION_NUM)
-    checker.export_sqlgen_miss_sqls()
+    checker.export_sqlgen_miss()
     return
 
 
