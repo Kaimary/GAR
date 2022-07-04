@@ -13,7 +13,7 @@ from configs.config import DIR_PATH, SERIALIZE_DATA_DIR, GENERATION_NUM, CANDIDA
     REWRITE_FLAG, OVERWRITE_FLAG, RERANKER_DEV_DATA_MAX_NUM, OUTPUT_DIR, \
     RETRIEVAL_MODEL_DIR, RETRIEVAL_MODEL_NAME, RETRIEVAL_MODEL_DIMENSION, \
     RERANKER_EMBEDDING_MODEL_NAME, RERANKER_MODEL_NAME, \
-    DEBUG_LOG_FILE, SQLGEN_DEBUG_FLAG, RETREVAL_DEBUG_FLAG
+    SQLGEN_DEBUG_FLAG, RETREVAL_DEBUG_FLAG
 
 
 # @click.command()
@@ -42,7 +42,7 @@ def main(dataset_name, dataset_file, tables_file, db_dir, mode):
 
     with open(dataset_file, "r") as data_file:
         data = json.load(data_file)
-        for i, ex in enumerate(data[1000:]):
+        for i, ex in enumerate(data):
             total += 1
             db_id = ex['db_id']
             # Exclude below databases for code bug
@@ -182,7 +182,7 @@ def main(dataset_name, dataset_file, tables_file, db_dir, mode):
 
 if __name__ == "__main__":
     # main()
-    dataset_file = 'datasets/spider/dev.json'
+    dataset_file = 'datasets/spider/dev.json.bak'
     main(
         'spider',
         dataset_file, 
