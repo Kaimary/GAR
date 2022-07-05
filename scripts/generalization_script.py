@@ -1,10 +1,11 @@
 import os
 import json
+from tqdm import tqdm
 
 from utils.recall_checker_utils import RecallChecker
 from generator.QunitGenerator.qunit_generator import QunitSQLGenerator
 from synthesizer.DialectSynthesizer.dialect_synthesizer import DialectSynthesizer
-from configs.config import DIR_PATH, GENERATION_NUM, OVERWRITE_FLAG, SERIALIZE_DATA_DIR
+from configs.config import DIR_PATH, GENERATION_NUM, OVERWRITE_FLAG, REWRITE_FLAG, SERIALIZE_DATA_DIR
 
 def main():
     dataset_name = 'spider'
@@ -58,12 +59,27 @@ def serialization(
                     datafile = open(db_data_path, 'w')
                     for sql, dialect in zip(sqls, dialects):
                         # write line to output file
-                        datafile.write(sql)
-                        datafile.write('\t')
-                        datafile.write(dialect)
-                        datafile.write("\n")
+                        line = sql + '\t' + dialect + '\n'
+                        datafile.write(line)
                     datafile.close()
-                # Read from the existing file
+                    # Empty the lists
+                    sqls.clear()
+                    dialects.clear()
+                # Rewrite dialects
+                elif REWRITE_FLAG:
+                    all_lines = []
+                    datafile = open(db_data_path, 'r')
+                    print(f"Rewrite dialects for database `{db_id}` ......")
+                    for line in tqdm(datafile.readlines()):
+                        sql, _ = line.split('\t')
+                        synthesizer.switch_database(db_id)
+                        dialect = synthesizer.synthesize(sql)
+                        line = sql + '\t' + dialect + '\n'
+                        all_lines.append(line)
+
+                    datafile = open(db_data_path, 'w')
+                    datafile.writelines(all_lines)
+                    datafile.close()
 
     checker.print_sqlgen_total_result(num_total_count, GENERATION_NUM)
     checker.export_sqlgen_miss()
