@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 from tqdm import tqdm
 
@@ -6,17 +7,6 @@ from utils.recall_checker_utils import RecallChecker
 from generator.QunitGenerator.qunit_generator import QunitSQLGenerator
 from synthesizer.DialectSynthesizer.dialect_synthesizer import DialectSynthesizer
 from configs.config import DIR_PATH, GENERATION_NUM, OVERWRITE_FLAG, REWRITE_FLAG, SERIALIZE_DATA_DIR
-
-def main():
-    dataset_name = 'spider'
-    tables_file = 'datasets/spider/tables.json'
-    db_dir = 'datasets/spider/database'
-    output_dir = 'saved_data/'
-    # serialization(dataset_name, 'datasets/spider/gap_predicts.txt', tables_file, db_dir, output_dir)
-    # serialization(dataset_name, 'sqlgenv2/datasets/geo/dev.json', tables_file, db_dir, output_dir)
-    serialization(dataset_name, 'datasets/spider/smbop_dev_output.json', tables_file, db_dir, output_dir)
-
-    return
 
 def serialization(
         dataset_name, data_file, tables_file, db_dir, output_dir):
@@ -85,6 +75,10 @@ def serialization(
     checker.export_sqlgen_miss()
     return
 
+dataset_name = 'spider'
+tables_file = 'datasets/spider/tables.json'
+db_dir = 'datasets/spider/database'
+output_dir = 'saved_data/'
+data_file = sys.argv[1]
 
-if __name__ == "__main__":
-    main()
+serialization(dataset_name, data_file, tables_file, db_dir, output_dir)

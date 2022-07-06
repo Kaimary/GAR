@@ -33,7 +33,7 @@ dataset_name = sys.argv[1]
 model_name = sys.argv[2]
 num_epochs = 10
 train_batch_size = RETRIEVAL_MODEL_TRAIN_BATCH_SIZE 
-model_save_path = DIR_PATH + RETRIEVAL_MODEL_DIR.format(dataset_name)
+model_save_path = os.path.join(DIR_PATH + RETRIEVAL_MODEL_DIR.format(dataset_name), model_name)
 
 # Load a pre-trained sentence transformer model
 model = SentenceTransformer(model_name)

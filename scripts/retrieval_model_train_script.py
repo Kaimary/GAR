@@ -219,10 +219,8 @@ def generate_triples_for_retrieval_model(
                     datafile = open(db_data_path, 'w')
                     for sql, dialect in zip(sqls, dialects):
                         # write line to output file
-                        datafile.write(sql)
-                        datafile.write('\t')
-                        datafile.write(dialect)
-                        datafile.write("\n")
+                        line = sql + '\t' + dialect + '\n'
+                        datafile.write(line)
                     datafile.close()
                 # Read from the existing file
                 else:
@@ -265,7 +263,7 @@ def generate_triples_for_retrieval_model(
             index += 1
 
     checker.print_sqlgen_total_result(num_total_count, GENERATION_NUM)
-    checker.export_sqlgen_miss_sqls()
+    checker.export_sqlgen_miss()
     return output
 
 
