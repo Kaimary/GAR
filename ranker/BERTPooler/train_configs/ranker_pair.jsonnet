@@ -8,13 +8,13 @@
         "max_instances": 100000,
         "token_indexers": {
             "bert": {
-                "model_name": "",
+                "model_name": "roberta-base",
                 "type": "pretrained_transformer"
             }
         },
         "tokenizer": {
             "add_special_tokens": false,
-            "model_name": "",
+            "model_name": "roberta-base",
             "type": "pretrained_transformer"
         },
         "type": "listwise_pair_ranker_reader"
@@ -22,13 +22,13 @@
     "model": {
         "dropout": 0.2,
         "encoder": {
-            "pretrained_model": "",
+            "pretrained_model": "roberta-base",
             "type": "bert_pooler"
         },
         "text_field_embedder": {
             "token_embedders": {
                 "bert": {
-                    "model_name": "",
+                    "model_name": "roberta-base",
                     "type": "pretrained_transformer"
                 }
             }
@@ -56,13 +56,13 @@
     "validation_dataset_reader": {
         "token_indexers": {
             "bert": {
-                "model_name": "",
+                "model_name": "roberta-base",
                 "type": "pretrained_transformer"
             }
         },
         "tokenizer": {
             "add_special_tokens": false,
-            "model_name": "",
+            "model_name": "roberta-base",
             "type": "pretrained_transformer"
         },
         "type": "listwise_pair_ranker_reader"

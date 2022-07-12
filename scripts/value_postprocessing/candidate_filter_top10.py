@@ -155,8 +155,6 @@ def main(nl_file_path, candidates_file_path, tables_file, database_dir, pred_sql
                 database_dir
             )
         db_context.change_utterance(nl)
-        if nl == "What is the total surface area of the continents Asia and Europe?":
-            print("Here")
         tmp = candidate_filter(candidates, db_id, db_context, tables_file, database_dir)
         # padding to 10 sqls
         for i in range(10 - len(tmp)):

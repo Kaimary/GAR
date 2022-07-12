@@ -180,3 +180,9 @@ reranker_script_debug.py
 model_output_sql_postprocessing.py
 .vscode/launch.json
 reranker_script_debug.py
+merge_gap_smbop.py
+retrieval_model_train_script_debug.py
+BM25_test_script.py
+ranker/BERTPooler/dataset_readers/pointwise_reader.py
+ranker/BERTPooler/models/pointwise_ranker.py
+ranker/common/losses/pointwise.py
