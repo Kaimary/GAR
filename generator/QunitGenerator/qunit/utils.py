@@ -5,6 +5,7 @@
 # @File    : utils.py
 # @Software: PyCharm
 import json
+import random
 from collections import defaultdict
 from typing import List
 from .keywords import *
@@ -100,19 +101,21 @@ def get_all_sql(file_path='sqlgenv2/datasets/spider/train_dev_spider.json') -> d
     res = defaultdict(list)
     with open(file_path, 'r') as f:
         spider_sqls = json.load(f)
+    # n = int(len(spider_sqls)*0.80)
+    # spider_sqls = random.sample(spider_sqls, k=n)
     for spider_sql in spider_sqls:
         res[spider_sql['db_id']].append(spider_sql['query_toks_no_value'])
     return res
 
 
-def get_all_sql_by_id(db_id: str, sql_file='sqlgenv2/datasets/spider/train_dev_spider.json') -> List[str]:
+def get_all_sql_by_id(db_id: str, all_sqls) -> List[str]:
     """
     get sql list by db_id
     @param sql_file: query samples which need to be loaded
     @param db_id: spider id which want to be analysed
     @return: List of sql
     """
-    sqls = get_all_sql(sql_file)[db_id]
+    sqls = all_sqls[db_id]
     # fix sqls
     for i in range(len(sqls)):
         sqls[i] = ' '.join(sqls[i])

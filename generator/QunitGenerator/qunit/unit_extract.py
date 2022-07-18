@@ -38,7 +38,7 @@ from copy import deepcopy
 from tqdm import tqdm
 from .keywords import *
 from typing import List
-from .utils import get_all_sql_by_id, alias_dependency_get, alias_remove
+from .utils import get_all_sql, get_all_sql_by_id, alias_dependency_get, alias_remove
 from configs.config import DIR_PATH, QUNITS_FILE, QUNITS_SET_COVER_FILE
 from utils.spider_utils import DBSchema, get_all_schema
 
@@ -959,10 +959,11 @@ def extract_spider_unit(dataset='spider', schema_file='datasets/spider/tables.js
     spider_patterns = dict()
     spider_set_cover = dict()
     count = 0
+    all_sqls = get_all_sql(sql_file)
     for key in db_schemas.keys():
         count += 1
         print(f'[INFO] Handling DB ({count:>3}/{len(db_schemas)}): {key}\r')
-        spider_pattern = SpiderPattern(get_all_sql_by_id(key, sql_file), DBSchema(key, db_schemas, db_path))
+        spider_pattern = SpiderPattern(get_all_sql_by_id(key, all_sqls), DBSchema(key, db_schemas, db_path))
         spider_patterns[key] = dict()
         spider_patterns[key]['global_syntactic'] = spider_pattern.global_syntactic.dict()
         spider_patterns[key]['units'] = spider_pattern.units.data_with_frequency()

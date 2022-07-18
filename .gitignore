@@ -164,6 +164,7 @@ generator/MaskGenerator
 output/
 saved_data/
 datasets/
+tmp/
 synthesizer/BARTSynthesizer/saved_model
 test.py
 helper.py
@@ -186,3 +187,19 @@ BM25_test_script.py
 ranker/BERTPooler/dataset_readers/pointwise_reader.py
 ranker/BERTPooler/models/pointwise_ranker.py
 ranker/common/losses/pointwise.py
+allennlp_debug.py
+ranker/BERTPooler/train_configs/ranker_pointwise.jsonnet
+reranker_script_debug.py
+ranker/BERTPooler/train_configs/ranker_pair_bart.jsonnet
+ranker/BERTPooler/train_configs/ranker_pair_sql.jsonnet
+ranker/BERTPooler/predictors/ranker_pointwise_predictor.py
+scripts/value_postprocessing/candidate_filter_top10.py.bak
+reranker_script_debug.py
+bridge_pred.sql
+pointwise_pred_sqls.txt
+bridge_spider_pred.sql
+evaluate_debug.py
+pointwise_debug.py
+reranker_script_debug.py
+smbop_pred.sql
+smbop_spider_pred.sql

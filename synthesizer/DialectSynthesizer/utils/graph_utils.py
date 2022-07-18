@@ -59,8 +59,10 @@ TEMPLATE = {
 
 
 def s_strip(string: str) -> str:
-    if '##' in string: string = string.split('##')[0]
-    if '.' in string: string = string.split('.')[1]
+    if '##' in string:
+        string = string.split('##')[0]
+    if '.' in string:
+        string = string.split('.')[1]
 
     return string
 
@@ -71,41 +73,46 @@ def build_graph_from_cond_unit(G, cond_unit, conj, table_dict, schema, node_post
     # TODO col_unit2 processing
     _, col_unit1, _ = val_unit
     col_name_node, is_year_col = build_graph_from_col_unit(G, col_unit1, table_dict, schema, node_posttag_dict, star_label,
-                                              edge_type=edge_type, conj=conj, use_annotation=use_annotation)
+                                                           edge_type=edge_type, conj=conj, use_annotation=use_annotation)
 
     op_opt = "not " + WHERE_OPS[op_id] if not_op else WHERE_OPS[op_id]
     op_opt_label = op_opt
     # If it is date-related column, we hard-code to add "year" prefix into the compare operator,
     # and use date-related templates to generate the label.
     if is_year_col and ('year'+op_opt) in TEMPLATE:
-        op_opt_label = 'year'+op_opt 
+        op_opt_label = 'year'+op_opt
     if not isinstance(val1, Dict):
         # for value node, we use the string name as the node name, and store the value in attrs instead.
         val1_node = str(val1) + '##' + str(node_posttag_dict[str(val1)])
-        G.add_node(val1_node, type="value_node", primary=False, value=val1, label=str(val1).strip('"'))
+        G.add_node(val1_node, type="value_node", primary=False,
+                   value=val1, label=str(val1).strip('"'))
         node_posttag_dict[str(val1)] += 1
         G.add_edge(
             col_name_node, val1_node, type=op_opt,
-            label=table_dict['annotations'][op_opt_label] if op_opt_label in table_dict['annotations'].keys() and use_annotation else TEMPLATE[op_opt_label]
+            label=table_dict['annotations'][op_opt_label] if use_annotation and 'annotations' in table_dict.keys(
+            ) and op_opt_label in table_dict['annotations'].keys() else TEMPLATE[op_opt_label]
         )
         # BETWEEN AND case
         if val2:
             val2_node = str(val2) + '##' + str(node_posttag_dict[str(val2)])
-            G.add_node(val2_node, type="value_node", primary=False, value=val2, label=str(val2).strip('"'))
+            G.add_node(val2_node, type="value_node", primary=False,
+                       value=val2, label=str(val2).strip('"'))
             node_posttag_dict[str(val2)] += 1
             G.add_edge(
                 col_name_node, val2_node, type=op_opt,
-                label=table_dict['annotations'][op_opt] if op_opt in table_dict['annotations'].keys() and use_annotation else TEMPLATE[
+                label=table_dict['annotations'][op_opt] if use_annotation and 'annotations' in table_dict.keys() and op_opt in table_dict['annotations'].keys() else TEMPLATE[
                     op_opt]
             )
     else:
         G1 = nx.MultiDiGraph(type="nested_node")
-        G1, Rq = build_graph_from_sql(G1, val1, table_dict, schema, parent_op=op_opt, parent_node=col_name_node)
+        G1, Rq = build_graph_from_sql(
+            G1, val1, table_dict, schema, parent_op=op_opt, parent_node=col_name_node)
         G1.graph['Rq'] = Rq
         G.add_node(G1)
         G.add_edge(
             col_name_node, G1, type=op_opt,
-            label=table_dict['annotations'][op_opt] if op_opt in table_dict['annotations'].keys() and use_annotation else TEMPLATE[op_opt]
+            label=table_dict['annotations'][op_opt] if use_annotation and 'annotations' in table_dict.keys(
+            ) and op_opt in table_dict['annotations'].keys() else TEMPLATE[op_opt]
         )
 
     return G
@@ -117,14 +124,15 @@ def build_graph_from_col_unit(G, col_unit1, table_dict, schema, node_posttag_dic
     agg_id, col_id, isDistinct = col_unit1
 
     col_ful_name = schema.nameMap[col_id]
-    table_name = col_ful_name.split('.')[0] if col_ful_name != '*' else star_label.split('##')[0]
+    table_name = col_ful_name.split(
+        '.')[0] if col_ful_name != '*' else star_label.split('##')[0]
     col_name = col_ful_name.split('.')[1] if col_ful_name != '*' else '*'
     # To check if the column is date-related column
     is_year_col = False
     table_id = -1
     if table_name in table_dict['table_names_original']:
         table_id = table_dict['table_names_original'].index(table_name)
-    index = -1 
+    index = -1
     for idx, col in enumerate(table_dict['column_names_original']):
         assert(len(col) == 2)
         t_id = col[0]
@@ -148,14 +156,16 @@ def build_graph_from_col_unit(G, col_unit1, table_dict, schema, node_posttag_dic
                 col_name_node = col
                 exist = True
                 break
-    if not col_name_node: 
-        col_name_node = col_ful_name + '##' + str(node_posttag_dict[col_ful_name])
+    if not col_name_node:
+        col_name_node = col_ful_name + '##' + \
+            str(node_posttag_dict[col_ful_name])
 
     if col_ful_name == '*':
         is_star = True
         col_ful_name = star_label.split('##')[-1]
     # if use an existing node, we need to use the counting number before incrementing
-    table_name_node = table_name + '##' + str(node_posttag_dict[table_name] - 1)
+    table_name_node = table_name + '##' + \
+        str(node_posttag_dict[table_name] - 1)
     if not exist:
         # # Check if the belonging table is relationship type.
         # # If not, we assign two labels for primary attribute, one for projection, one for predicate.
@@ -164,28 +174,32 @@ def build_graph_from_col_unit(G, col_unit1, table_dict, schema, node_posttag_dic
         if col_ful_name in table_dict['primaries']:
             G.add_node(
                 col_name_node, type="attribute_node", primary=True,
-                label=table_dict['annotations'][col_ful_name] if col_ful_name in table_dict['annotations'].keys() and use_annotation else s_strip(
+                label=table_dict['annotations'][col_ful_name] if use_annotation and 'annotations' in table_dict.keys() and col_ful_name in table_dict['annotations'].keys() else s_strip(
                     col_ful_name),
-                label1=table_dict['annotations'][table_name] if table_name in table_dict[
-                    'annotations'].keys() else table_name
+                label1=table_dict['annotations'][table_name] if use_annotation and 'annotations' in table_dict.keys(
+                ) and table_name in table_dict['annotations'].keys() else table_name
             )
         else:
             G.add_node(
                 col_name_node, type="attribute_node", primary=True if col_ful_name in table_dict['primaries'] else False,
-                label=table_dict['annotations'][col_ful_name] if col_ful_name in table_dict['annotations'].keys() and use_annotation else s_strip(
-                    col_ful_name)
+                label=table_dict['annotations'][col_ful_name] if
+                use_annotation and 'annotations' in table_dict.keys(
+                ) and col_ful_name in table_dict['annotations'].keys()
+                else s_strip(col_ful_name)
             )
     key = table_name + '##' + col_ful_name
     if reverse:
         G.add_edge(
             col_name_node, table_name_node, type=edge_type,
-            label=table_dict['annotations'][key] if key in table_dict['annotations'].keys() and use_annotation else TEMPLATE[edge_type],
+            label=table_dict['annotations'][key] if use_annotation and 'annotations' in table_dict.keys(
+            ) and key in table_dict['annotations'].keys() else TEMPLATE[edge_type],
             conj_name=conj
         )
     else:
         G.add_edge(
             table_name_node, col_name_node, type=edge_type,
-            label=table_dict['annotations'][key] if key in table_dict['annotations'].keys() and use_annotation else TEMPLATE[edge_type],
+            label=table_dict['annotations'][key] if use_annotation and 'annotations' in table_dict.keys(
+            ) and key in table_dict['annotations'].keys() else TEMPLATE[edge_type],
             conj_name=conj
         )
 
@@ -193,12 +207,12 @@ def build_graph_from_col_unit(G, col_unit1, table_dict, schema, node_posttag_dic
         distinct_node = "distinct" + '##' + str(node_posttag_dict["distinct"])
         G.add_node(
             distinct_node, type="distinct_node", primary=False,
-            label=table_dict['annotations']["distinct"] if "distinct" in table_dict['annotations'].keys() and use_annotation else TEMPLATE[
+            label=table_dict['annotations']["distinct"] if use_annotation and 'annotations' in table_dict.keys() and "distinct" in table_dict['annotations'].keys() else TEMPLATE[
                 "distinct"]
         )
         G.add_edge(
             distinct_node, col_name_node, type="distnt",
-            label=table_dict['annotations']["distinct"] if "distinct" in table_dict['annotations'].keys() and use_annotation else TEMPLATE[
+            label=table_dict['annotations']["distinct"] if use_annotation and 'annotations' in table_dict.keys() and "distinct" in table_dict['annotations'].keys() else TEMPLATE[
                 "distnt"]
         )
         node_posttag_dict["distinct"] += 1
@@ -208,15 +222,15 @@ def build_graph_from_col_unit(G, col_unit1, table_dict, schema, node_posttag_dic
         agg_opt_node = agg_opt + '##' + str(node_posttag_dict[agg_opt])
         G.add_node(
             agg_opt_node, type="function_node", primary=False,
-            label=table_dict['annotations'][agg_opt] if agg_opt in table_dict['annotations'].keys() and use_annotation else TEMPLATE[
+            label=table_dict['annotations'][agg_opt] if use_annotation and 'annotations' in table_dict.keys() and agg_opt in table_dict['annotations'].keys() else TEMPLATE[
                 agg_opt]
         )
         G.add_edge(
             agg_opt_node, col_name_node, type="r",
-            label=table_dict['annotations'][agg_opt] if agg_opt in table_dict['annotations'].keys() and use_annotation else TEMPLATE["r"])
+            label=table_dict['annotations'][agg_opt] if use_annotation and 'annotations' in table_dict.keys() and agg_opt in table_dict['annotations'].keys() else TEMPLATE["r"])
         node_posttag_dict[agg_opt] += 1
 
-    if not is_star: 
+    if not is_star:
         node_posttag_dict[col_ful_name] += 1
     else:
         node_posttag_dict["*"] += 1
@@ -239,7 +253,7 @@ def build_graph_from_sql(G, sql_dict, table_dict, schema, parent_op=None, parent
     # primary_keys = [pk for pk in table_dict["primary_keys"]]
     # pricol2table = {}
     # for k, col in enumerate(table_dict["column_names_original"][1:]):
-    #     if (k+1) in primary_keys: 
+    #     if (k+1) in primary_keys:
     #         pricol2table[k+1] = col[0]
 
     from_dict = sql_dict['from']
@@ -253,7 +267,7 @@ def build_graph_from_sql(G, sql_dict, table_dict, schema, parent_op=None, parent
     #     _, col_id2, _ = val_unit2
     #     if all( k in pricol2table.keys()  for k in [col_id1, col_id2]):
     #         key = f"{table_dict['table_names_original'][pricol2table[col_id1]]}:type"
-    #         if key in table_dict["annotations"] and table_dict["annotations"][key] == "relationship": 
+    #         if key in table_dict["annotations"] and table_dict["annotations"][key] == "relationship":
     #             primary_table = pricol2table[col_id2]
     #         else:
     #             primary_table = pricol2table[col_id1]
@@ -266,17 +280,18 @@ def build_graph_from_sql(G, sql_dict, table_dict, schema, parent_op=None, parent
     if not from_dict['conds']:
         _, table_id = from_dict['table_units'][0]
         table_name = schema.nameMap[table_id]
-        table_name_node = table_name + '##' + str(node_posttag_dict[table_name])
+        table_name_node = table_name + '##' + \
+            str(node_posttag_dict[table_name])
         tables.append(table_name)
         G.add_node(
             table_name_node, type="relation_node", primary=False,
-            label=table_dict['annotations'][table_name] if table_name in table_dict[
+            label=table_dict['annotations'][table_name] if use_annotation and 'annotations' in table_dict.keys() and table_name in table_dict[
                 'annotations'].keys() else table_name
         )
         node_posttag_dict[table_name] += 1
         query_obj = table_name_node
         star_label = f"{table_name}##{table_dict['annotations'][table_name]}" \
-            if table_name in table_dict['annotations'].keys() else f"{table_name}##{table_name}"
+            if use_annotation and 'annotations' in table_dict.keys() and table_name in table_dict['annotations'].keys() else f"{table_name}##{table_name}"
     # If join exists
     else:
         # relation = '??'.join(sorted([schema.nameMap[t[1]] for t in from_dict['table_units']]))
@@ -285,31 +300,37 @@ def build_graph_from_sql(G, sql_dict, table_dict, schema, parent_op=None, parent
             _, table_id1 = t1
             table_name1 = schema.nameMap[table_id1]
             if i == 0:
-                table_name_node1 = table_name1 + '##' + str(node_posttag_dict[table_name1])
+                table_name_node1 = table_name1 + '##' + \
+                    str(node_posttag_dict[table_name1])
                 tables.append(table_name1)
             else:
-                table_name_node1 = table_name1 + '##' + str(node_posttag_dict[table_name1] - 1)
+                table_name_node1 = table_name1 + '##' + \
+                    str(node_posttag_dict[table_name1] - 1)
 
             _, table_id2 = t2
             table_name2 = schema.nameMap[table_id2]
             if table_name1 == table_name2:
                 if i == 0:
-                    table_name_node2 = table_name2 + '##' + str(node_posttag_dict[table_name2] + 1)
+                    table_name_node2 = table_name2 + '##' + \
+                        str(node_posttag_dict[table_name2] + 1)
                 else:
-                    table_name_node2 = table_name2 + '##' + str(node_posttag_dict[table_name2])
+                    table_name_node2 = table_name2 + '##' + \
+                        str(node_posttag_dict[table_name2])
             else:
-                table_name_node2 = table_name2 + '##' + str(node_posttag_dict[table_name2])
+                table_name_node2 = table_name2 + '##' + \
+                    str(node_posttag_dict[table_name2])
             tables.append(table_name2)
 
             if i == 0:
                 label = table_name1
-                # # If the table is relationship type, we assign the label for this table under current relation. 
+                # # If the table is relationship type, we assign the label for this table under current relation.
                 # key = f"{table_name1}({relation})"
-                # if key in table_dict["annotations"].keys(): 
-                #     label = table_dict["annotations"][key] 
-                if table_name1 in table_dict['annotations'].keys():
+                # if key in table_dict["annotations"].keys():
+                #     label = table_dict["annotations"][key]
+                if use_annotation and 'annotations' in table_dict.keys() and table_name1 in table_dict['annotations'].keys():
                     label = table_dict['annotations'][table_name1]
-                G.add_node(table_name_node1, type="relation_node", primary=False, label=label)
+                G.add_node(table_name_node1, type="relation_node",
+                           primary=False, label=label)
                 node_posttag_dict[table_name1] += 1
 
             label = table_name2
@@ -317,11 +338,12 @@ def build_graph_from_sql(G, sql_dict, table_dict, schema, parent_op=None, parent
             # # It should exist an annotation which the format is as below,
             # # " [table_name](XXX??XXX) "
             # key = f"{table_name2}({relation})"
-            # if key in table_dict["annotations"].keys(): 
-            #     label = table_dict["annotations"][key] 
-            if table_name2 in table_dict['annotations'].keys():
+            # if key in table_dict["annotations"].keys():
+            #     label = table_dict["annotations"][key]
+            if use_annotation and 'annotations' in table_dict.keys() and table_name2 in table_dict['annotations'].keys():
                 label = table_dict['annotations'][table_name2]
-            G.add_node(table_name_node2, type="relation_node", primary=False, label=label)
+            G.add_node(table_name_node2, type="relation_node",
+                       primary=False, label=label)
             node_posttag_dict[table_name2] += 1
 
             _, op_id, val_unit1, val_unit2, _ = cond
@@ -346,16 +368,20 @@ def build_graph_from_sql(G, sql_dict, table_dict, schema, parent_op=None, parent
 
                 col_name11 = schema.nameMap[col_id11]
                 col_name22 = schema.nameMap[col_id22]
-                pk_fk_dict[col_name11.split('.')[0]].add(col_name22.split('.')[0])
-                pk_fk_dict[col_name22.split('.')[0]].add(col_name11.split('.')[0])
+                pk_fk_dict[col_name11.split('.')[0]].add(
+                    col_name22.split('.')[0])
+                pk_fk_dict[col_name22.split('.')[0]].add(
+                    col_name11.split('.')[0])
                 # In order to exact match the annotation, we construct the sorted span into string
                 labels1 = [col_name11, col_name22]
                 labels1.sort()
                 label1 = WHERE_OPS[op_id1].join(labels1)
                 label += '+' + label1
-            G.add_edge(table_name_node1, table_name_node2, type="theta", label=label)
+            G.add_edge(table_name_node1, table_name_node2,
+                       type="theta", label=label)
             # label = f"{schema.nameMap[col_id2]}{WHERE_OPS[op_id]}{schema.nameMap[col_id1]}"
-            G.add_edge(table_name_node2, table_name_node1, type="theta", label=label)
+            G.add_edge(table_name_node2, table_name_node1,
+                       type="theta", label=label)
     # Assign query object and star query object based on annotations
     # In order to align with the key string in annotations, we sort the tables alphabetically.
     if len(tables) > 1:
@@ -368,7 +394,7 @@ def build_graph_from_sql(G, sql_dict, table_dict, schema, parent_op=None, parent
         star_qo_key = ''
         if use_annotation:
             star_qo_key = '*(' + '??'.join(tables) + ')'
-            if star_qo_key not in table_dict["annotations"] and sql_dict['groupBy']:
+            if 'annotations' in table_dict.keys() and star_qo_key not in table_dict["annotations"] and sql_dict['groupBy']:
                 for col_unit in sql_dict['groupBy']:
                     _, col_id, _ = col_unit
                     col_name = schema.nameMap[col_id]
@@ -392,9 +418,9 @@ def build_graph_from_sql(G, sql_dict, table_dict, schema, parent_op=None, parent
 
         # if star_qo_key not in table_dict["annotations"]:
         #     print(star_qo_key)
-        
+
         star_label = f"{tables[0]}##{table_dict['annotations'][star_qo_key]}" \
-            if use_annotation and star_qo_key in table_dict["annotations"] else f"{tables[0]}##UNK"
+            if use_annotation and 'annotations' in table_dict.keys() and star_qo_key in table_dict["annotations"] else f"{tables[0]}##UNK"
         # star_query_obj = star_qo_tbl + '##' + str(node_posttag_dict[star_qo_tbl] - 1)
 
     # # if join exists
@@ -403,12 +429,12 @@ def build_graph_from_sql(G, sql_dict, table_dict, schema, parent_op=None, parent
     #     table2 = tables[1]
     #     key1 = s_strip(table1) + '==' + s_strip(table2)
     #     G.add_edge(
-    #             table1, table2, type="theta", 
+    #             table1, table2, type="theta",
     #             label = table_dict['annotations'][key1] if key1 in table_dict['annotations'].keys() else TEMPLATE["join"]
     #         )
     #     key2 = s_strip(table2) + '==' + s_strip(table1)
     #     G.add_edge(
-    #             table2, table1, type="theta", 
+    #             table2, table1, type="theta",
     #             label = table_dict['annotations'][key2] if key2 in table_dict['annotations'].keys() else TEMPLATE["join"]
     #         )
     # _, _, val_unit, val1, _ = tables['conds']
@@ -426,19 +452,20 @@ def build_graph_from_sql(G, sql_dict, table_dict, schema, parent_op=None, parent
         # TODO col_unit2 processing
         _, col_unit1, _ = val_unit
         col_name_node, _ = build_graph_from_col_unit(G, col_unit1, table_dict, schema, node_posttag_dict, star_label,
-                                                  reverse=True, use_annotation=use_annotation)
+                                                     reverse=True, use_annotation=use_annotation)
         sel_cols.append(col_name_node)
         # For the first project, check DISTINCT property out of col unit.
         if i == 0 and isDistinct:
-            distinct_node = "distinct" + '##' + str(node_posttag_dict["distinct"])
+            distinct_node = "distinct" + '##' + \
+                str(node_posttag_dict["distinct"])
             G.add_node(
                 distinct_node, type="distinct_node", primary=False,
-                label=table_dict['annotations']["distinct"] if "distinct" in table_dict['annotations'].keys() and use_annotation else
+                label=table_dict['annotations']["distinct"] if use_annotation and 'annotations' in table_dict.keys() and "distinct" in table_dict['annotations'].keys() else
                 TEMPLATE["distinct"]
             )
             G.add_edge(
                 distinct_node, col_name_node, type="distnt",
-                label=table_dict['annotations']["distinct"] if "distinct" in table_dict['annotations'].keys() and use_annotation else
+                label=table_dict['annotations']["distinct"] if use_annotation and 'annotations' in table_dict.keys() and "distinct" in table_dict['annotations'].keys() else
                 TEMPLATE["distnt"]
             )
             node_posttag_dict["distinct"] += 1
@@ -447,12 +474,12 @@ def build_graph_from_sql(G, sql_dict, table_dict, schema, parent_op=None, parent
             agg_opt_node = agg_opt + '##' + str(node_posttag_dict[agg_opt])
             G.add_node(
                 agg_opt_node, type="function_node", primary=False,
-                label=table_dict['annotations'][agg_opt] if agg_opt in table_dict['annotations'].keys() and use_annotation else TEMPLATE[
+                label=table_dict['annotations'][agg_opt] if use_annotation and 'annotations' in table_dict.keys() and agg_opt in table_dict['annotations'].keys() else TEMPLATE[
                     agg_opt]
             )
             G.add_edge(
                 agg_opt_node, col_name_node, type="r",
-                label=table_dict['annotations'][agg_opt] if agg_opt in table_dict['annotations'].keys() and use_annotation else TEMPLATE[
+                label=table_dict['annotations'][agg_opt] if use_annotation and 'annotations' in table_dict.keys() and agg_opt in table_dict['annotations'].keys() else TEMPLATE[
                     "r"]
             )
             node_posttag_dict[agg_opt] += 1
@@ -460,7 +487,7 @@ def build_graph_from_sql(G, sql_dict, table_dict, schema, parent_op=None, parent
         # # if it is in subquery, connect the selection node with the predicate node which belongs to the main relation
         # if parent_node:
         #     G.add_edge(
-        #         parent_node, col_name_node, type=parent_op, 
+        #         parent_node, col_name_node, type=parent_op,
         #         label = table_dict['annotations'][parent_op] if parent_op in table_dict['annotations'].keys() else TEMPLATE[parent_op]
         #     )
 
@@ -497,20 +524,22 @@ def build_graph_from_sql(G, sql_dict, table_dict, schema, parent_op=None, parent
         for val_unit in val_units:
             _, col_unit1, _ = val_unit
             col_name_node, _ = build_graph_from_col_unit(G, col_unit1, table_dict, schema, node_posttag_dict, star_label,
-                                                      edge_type=edge_type, use_annotation=use_annotation)
+                                                         edge_type=edge_type, use_annotation=use_annotation)
 
     # processing LIMIT
     if sql_dict['limit']:
         limit_n = sql_dict['limit']
         # Hard-code to fix masked-out-LIMIT in the extracted nested-predicate unit
-        if limit_n == '"value"': limit_n = 1
-        limit_n_node = str(limit_n) + '##' + str(node_posttag_dict[str(limit_n)])
+        if limit_n == '"value"':
+            limit_n = 1
+        limit_n_node = str(limit_n) + '##' + \
+            str(node_posttag_dict[str(limit_n)])
         G.add_node(limit_n_node, type="value_node", primary=False, value=limit_n,
                    label=TEMPLATE[str(limit_n).strip('"')])
         node_posttag_dict[str(limit_n)] += 1
         G.add_edge(
             query_obj, limit_n_node, type='limit',
-            label=table_dict['annotations']['limit'] if 'limit' in table_dict['annotations'].keys() else TEMPLATE[
+            label=table_dict['annotations']['limit'] if use_annotation and 'annotations' in table_dict.keys() and 'limit' in table_dict['annotations'].keys() else TEMPLATE[
                 'limit']
         )
 
