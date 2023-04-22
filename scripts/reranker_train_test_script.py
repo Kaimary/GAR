@@ -9,7 +9,7 @@ from utils.recall_checker_utils import RecallChecker
 from utils.spider_utils import fix_number_value,fix_query_toks_no_value
 from generator.QunitGenerator.qunit_generator import QunitSQLGenerator
 from synthesizer.DialectSynthesizer.dialect_synthesizer import DialectSynthesizer
-from configs.config import DIR_PATH, SERIALIZE_DATA_DIR, GENERATION_NUM, CANDIDATE_NUM, \
+from configs.config import DIR_PATH, RERANKER_DEV_DATA_FILE, RERANKER_TRAIN_DATA_FILE, SERIALIZE_DATA_DIR, GENERATION_NUM, CANDIDATE_NUM, \
     REWRITE_FLAG, OVERWRITE_FLAG, RERANKER_DEV_DATA_MAX_NUM, \
     RETRIEVAL_MODEL_DIR, RETRIEVAL_MODEL_NAME, RETRIEVAL_MODEL_DIMENSION, \
     SQLGEN_DEBUG_FLAG, RETREVAL_DEBUG_FLAG
@@ -149,8 +149,8 @@ def main(dataset_name, dataset_file, tables_file, db_dir, output_dir, mode):
                     c = list(zip(candidates, labels))
                     random.shuffle(c)
                     candidates, labels = zip(*c)
-                    ins["candidates"] = candidates,
-                    ins["labels"] = labels
+                    ins["candidates"] = list(candidates)
+                    ins["labels"] = list(labels)
             else:
                 candidates = candidate_dialects
                 if gold_sql_indices:
@@ -169,13 +169,15 @@ def main(dataset_name, dataset_file, tables_file, db_dir, output_dir, mode):
                 ins["candidate_sqls"] = candidate_sqls
                 ins["labels"] = labels
 
-            output.append(ins)
+            if "candidates" in ins.keys(): output.append(ins)
 
     # *Debug purpose*
     if SQLGEN_DEBUG_FLAG: checker.export_sqlgen_miss()
     if RETREVAL_DEBUG_FLAG: checker.export_candidategen_miss(total, CANDIDATE_NUM)
 
-    output_file = os.path.join(output_dir, f'{mode}.json')
+    if mode == 'train': output_file = DIR_PATH + RERANKER_TRAIN_DATA_FILE.format(dataset_name)
+    elif mode == 'dev': output_file = DIR_PATH + RERANKER_DEV_DATA_FILE.format(dataset_name)
+    else: output_file = os.path.join(output_dir, f'{mode}.json')
     debug_file = os.path.join(output_dir, 'miss_candidate_log.json')
     with open(output_file, 'w') as outfile:
         json.dump(output, outfile, indent=4)

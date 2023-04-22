@@ -35,7 +35,7 @@
         },
         "type": "listwise_pair_ranker"
     },
-    "train_data_path": "/home/kaimary/GAR/saved_data/spider/reranker/train.json",
+    "train_data_path": "/home/kaimary/GAR/saved_models/gar.spider/reranker/train.json",
     "trainer": {
         "cuda_device": 0,
         "learning_rate_scheduler": {
@@ -52,7 +52,7 @@
         "patience": 10,
         "validation_metric": "+ndcg"
     },
-    "validation_data_path": "/home/kaimary/GAR/saved_data/spider/reranker/dev.json",
+    "validation_data_path": "/home/kaimary/GAR/saved_models/gar.spider/reranker/dev.json",
     "validation_dataset_reader": {
         "token_indexers": {
             "bert": {

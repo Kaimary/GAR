@@ -161,6 +161,7 @@ cython_debug/
 
 output/
 saved_models/
+saved_models.bak/
 datasets/
 serialization/
 serialization.bak/
@@ -168,3 +169,5 @@ scripts/value_postprocessing/spider_db_context.py.bak
 .vscode/launch.json
 reranker_train_test_script.py
 candidate_filter_top10.py
+retrieval_model_train_script.py
+allennlp_debug.py

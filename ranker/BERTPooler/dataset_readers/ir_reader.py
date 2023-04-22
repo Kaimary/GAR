@@ -46,7 +46,7 @@ class IRDatasetReader(DatasetReader):
         if not text:
             return None
         
-        if isinstance(text, tuple):
+        if isinstance(text, Tuple):
             sentence_a, sentence_b = text
             tokens_a = self.tokenizer.tokenize(sentence_a)
             tokens_b = self.tokenizer.tokenize(sentence_b)

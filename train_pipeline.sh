@@ -46,7 +46,14 @@ RERANKER_MODEL_NAME=$(cut -d'@' -f8 <<< "$output")
 RERANKER_EMBEDDING_MODEL_NAME=$(cut -d'@' -f9 <<< "$output")
 
 RETRIEVAL_MODEL_DIR=$RETRIEVAL_MODEL_DIR/$RETRIEVAL_MODEL_NAME
-RERANKER_MODEL_DIR=$RERANKER_MODEL_DIR/$RERANKER_MODEL_NAME\+$RERANKER_EMBEDDING_MODEL_NAME
+RETRIEVAL_MODEL_BIN=$RETRIEVAL_MODEL_DIR/pytorch_model.bin
+
+if [ ! -d $RETRIEVAL_MODEL_DIR ]; then
+  mkdir -p $RETRIEVAL_MODEL_DIR;
+fi
+if [ ! -d $RERANKER_MODEL_DIR ]; then
+  mkdir -p $RERANKER_MODEL_DIR;
+fi
 
 if [ ! -f $RETRIEVAL_MODEL_TRAIN_DATA_GZ_FILE ]; then
     echo "ACTION REPORT: Generate retrieval model's fine-tune data ......"
@@ -63,7 +70,7 @@ else
     echo "=================================================================="
 fi
 
-if [ ! -d $RETRIEVAL_MODEL_DIR ]; then
+if [ ! -f $RETRIEVAL_MODEL_BIN ]; then
     echo "ACTION REPORT: Start to fine-tune the retrieval model ......"
     python3 -m ranker.sentenceBERT.sentence_embedder $DATASET_NAME $RETRIEVAL_MODEL_NAME $RETRIEVAL_MODEL_DIR
     if [ $? -ne 0 ]; then
@@ -79,7 +86,7 @@ fi
 
 if [ ! -f $RERANKER_TRAIN_DATA_FILE ]; then
     echo "ACTION REPORT: Generate re-ranker train data ......"
-    python3 -m scripts.reranker_script $DATASET_NAME $DATASET_TRAIN_FILE $TABLES_FILE $DB_DIR $RERANKER_MODEL_DIR "train"
+    python3 -m scripts.reranker_train_test_script $DATASET_NAME $DATASET_TRAIN_FILE $TABLES_FILE $DB_DIR $RERANKER_MODEL_DIR "train"
     if [ $? -ne 0 ]; then
         echo "RESULT REPORT: Re-ranker train data failed!"
         exit;
@@ -92,7 +99,7 @@ else
 fi
 if [ ! -f $RERANKER_DEV_DATA_FILE ]; then
     echo "ACTION REPORT: Generate re-ranker dev data ......"
-    python3 -m scripts.reranker_script $DATASET_NAME $DATASET_DEV_FILE $TABLES_FILE $DB_DIR $RERANKER_MODEL_DIR "dev"
+    python3 -m scripts.reranker_train_test_script $DATASET_NAME $DATASET_DEV_FILE $TABLES_FILE $DB_DIR $RERANKER_MODEL_DIR "dev"
     if [ $? -ne 0 ]; then
         echo "RESULT REPORT: Re-ranker dev data failed!"
         exit;
@@ -104,7 +111,9 @@ else
     echo "=================================================================="
 fi
 
-if [ ! -d $RERANKER_MODEL_DIR ]; then
+RERANKER_MODEL_DIR=$RERANKER_MODEL_DIR/$RERANKER_MODEL_NAME\+$RERANKER_EMBEDDING_MODEL_NAME
+RERANKER_MODEL_BIN=$RERANKER_MODEL_DIR/model.tar.gz
+if [ ! -f $RERANKER_MODEL_BIN ]; then
     echo "=================================================================="
     echo "ACTION REPORT: Change the embedding model name in the config file..."
     python3 -m configs.update_config "$RERANKER_CONFIG_FILE" "$RERANKER_EMBEDDING_MODEL_NAME" "$RERANKER_TRAIN_DATA_FILE" "$RERANKER_DEV_DATA_FILE"
