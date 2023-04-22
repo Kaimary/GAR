@@ -157,5 +157,28 @@ $ bash test_pipeline.sh <dataset_name>  <test_file_path> <test_gold_sql_file> <t
 The evaluation script will create the directory `output` in the current directory.
 The evaluation results will be stored there.
 
+## Demonstration
+
+GAR is accomplished with demonstration as well! This is our demonstration paper [GENSQL: A Generative Natural Language Interface to Database Systems](https://arxiv.org/). *2023 IEEE 39th International Conference on Data Engineering (ICDE).*
+
+### Application Demo
+http://47.116.100.156:30279
+
+If you want to try on your own data, please contact us for the permission of the Admin Interface.😊
+
+Please cite it if you use GenSQL in your work:
+
+```bibtex
+@inproceedings{Yuankai2023:GenSQL,
+  author = {Yuankai Fan,Yuankai Fan, Tonghui Ren, Zhenying He, X.Sean Wang, Ye Zhang, Xingang Li},
+  title = "{GenSQL}: A Generative Natural Language Interface to Database Systems",
+  booktitle = "2023 IEEE 39th International Conference on Data Engineering",
+  month = april,
+  year = "2023",
+  publisher = "",
+  url = "",
+}
+```
+
 ## Contributing
 This project welcomes contributions and suggestions 👍.
