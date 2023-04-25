@@ -1,7 +1,7 @@
 # G<span style="font-size:0.8em;">A</span><span style="font-size:0.8em;">R</span>: A Generate-and-Rank Approach for Natural Language to SQL Translation
 > NL2SQL by generating candidate SQLs and ranking for them.
 > 
-The official repository which contains the code and pre-trained models for our paper [GAR: A Generate-and-Rank Approach for Natural Language to SQL Translation](https://arxiv.org/). *2023 IEEE 39th International Conference on Data Engineering (ICDE).*
+The official repository which contains the code and pre-trained models for our paper [GAR: A Generate-and-Rank Approach for Natural Language to SQL Translation](https://drive.google.com/file/d/1mqKVrpUf3Td_xaKZ_El91LrJKWrcw6k2/view?usp=share_link). *2023 IEEE 39th International Conference on Data Engineering (ICDE).*
 
 <p align="center">
    <a href="https://github.com/ElementAI/picard/blob/main/LICENSE">
@@ -24,12 +24,10 @@ If you use GAR in your work, please cite it as follows:
 ```bibtex
 @inproceedings{Yuankai2023:GAR,
   author = {Yuankai Fan,Zhenying He,Tonghui Ren,Dianjun Guo,Lin Chen,Ruisi Zhu,Guanduo Chen,Yinan Jing,Kai Zhang,X.Sean Wang},
-  title = "{GAR}: A Generate-and-Rank Approach for Natural Language to SQL Translation",
-  booktitle = "2023 IEEE 39th International Conference on Data Engineering",
-  month = april,
-  year = "2023",
-  publisher = "",
-  url = "",
+  title = {{GAR}: A Generate-and-Rank Approach for Natural Language to SQL Translation},
+  booktitle = {2023 IEEE 39th International Conference on Data Engineering},
+  publisher = {{IEEE}},
+  year = {2023}
 }
 ```
 
@@ -159,7 +157,7 @@ The evaluation results will be stored there.
 
 ## Demonstration
 
-GAR is accomplished with demonstration as well! This is our demonstration paper [GENSQL: A Generative Natural Language Interface to Database Systems](https://arxiv.org/). *2023 IEEE 39th International Conference on Data Engineering (ICDE).*
+GAR is accomplished with demonstration as well! This is our demonstration paper [GENSQL: A Generative Natural Language Interface to Database Systems](https://drive.google.com/file/d/1ip7Of3G6PJ0O5kiyPYEYW8_B9IQ-83J1/view?usp=share_link). *2023 IEEE 39th International Conference on Data Engineering (ICDE).*
 
 ### Application Demo
 http://47.116.100.156:30279
@@ -171,12 +169,10 @@ Please cite it if you use GenSQL in your work:
 ```bibtex
 @inproceedings{Yuankai2023:GenSQL,
   author = {Yuankai Fan,Yuankai Fan, Tonghui Ren, Zhenying He, X.Sean Wang, Ye Zhang, Xingang Li},
-  title = "{GenSQL}: A Generative Natural Language Interface to Database Systems",
-  booktitle = "2023 IEEE 39th International Conference on Data Engineering",
-  month = april,
-  year = "2023",
-  publisher = "",
-  url = "",
+  title = {{GenSQL}: A Generative Natural Language Interface to Database Systems},
+  booktitle = {2023 IEEE 39th International Conference on Data Engineering},
+  publisher = {{IEEE}},
+  year = {2023}
 }
 ```
 
