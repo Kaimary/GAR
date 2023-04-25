@@ -19,7 +19,7 @@ The official repository which contains the code and pre-trained models for our p
     <br />
 </p>
 
-If you use GAR in your work, please cite it as follows:
+If you use our code in your study, or find GAR useful, please cite it as follows:
 
 ```bibtex
 @inproceedings{Yuankai2023:GAR,
@@ -177,4 +177,6 @@ Please cite it if you use GenSQL in your work:
 ```
 
 ## Contributing
-This project welcomes contributions and suggestions 👍.
+This project welcomes contributions and suggestions 👍. 
+
+If you find bugs in our code, encounter problems when running the code, or have suggestions for GAR, please submit an issue, or reach out to me (fanyuankai@fudan.edu.cn)!
