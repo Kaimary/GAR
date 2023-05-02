@@ -4,16 +4,16 @@
 The official repository which contains the code and pre-trained models for our paper [GAR: A Generate-and-Rank Approach for Natural Language to SQL Translation](https://drive.google.com/file/d/1mqKVrpUf3Td_xaKZ_El91LrJKWrcw6k2/view?usp=share_link). *2023 IEEE 39th International Conference on Data Engineering (ICDE).*
 
 <p align="center">
-   <a href="https://github.com/ElementAI/picard/blob/main/LICENSE">
+   <a href="https://github.com/kaimary/GAR/blob/main/LICENSE">
         <img alt="license" src="https://img.shields.io/github/license/kaimary/GAR.svg?color=blue">
    </a>
-   <a href="https://github.com/MLNLP-World/Paper_Writing_Tips/stargazers">
+   <a href="https://github.com/kaimary/GAR/stargazers">
        <img alt="stars" src="https://img.shields.io/github/stars/kaimary/GAR" />
   	</a>
-  	<a href="https://github.com/MLNLP-World/Paper_Writing_Tips/network/members">
+  	<a href="https://github.com/kaimary/GAR/network/members">
        <img alt="FORK" src="https://img.shields.io/github/forks/kaimary/GAR?color=FF8000" />
   	</a>
-    <a href="https://github.com/MLNLP-World/Paper_Writing_Tips/issues">
+    <a href="https://github.com/kaimary/GAR/issues">
       <img alt="Issues" src="https://img.shields.io/github/issues/kaimary/GAR?color=0088ff"/>
     </a>
     <br />
