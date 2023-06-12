@@ -74,6 +74,7 @@ class QunitSQLGenerator(abstract_generator.AbstractSQLGenerator):
         if self.dataset_name == 'geo':
             self.rule_set.remove('nested_iue_rule')
         
+        assert self.skeleton is [], "Please check the `qunits.json` and make sure the query units were extracted properly!"
         #  Determine the SQL skeleton types.
         for skeleton in self.combinatorial_rule_base["skeleton"].copy():
             exist = False
