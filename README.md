@@ -46,13 +46,13 @@ If you use our code in your study, or find GAR useful, please cite it as follows
 This code implements:
 
 * The GAR method for generate-and-ranking queries.
-* A NL2SQL model under few-shot learning setting, which can achieve significant improvement over several benchmarks. 
+* An NL2SQL model under a few-shot learning setting, which can achieve significant improvement over several benchmarks. 
 
 ### About GAR
 > **TL;DR:** We introduce GAR -- a novel generate-and-rank approach to tackle NL2SQL translation problem.
-> GAR assumes a set of sample queries on a database is given, and can use SQL queries that are "component-similar" to the given samples to answer NL queries.
+> GAR assumes a set of sample queries on a database is given and can use SQL queries that are "component-similar" to the given samples to answer NL queries.
 
-The objective of NL2SQL translation is to convert a natural language query into a SQL query. 
+The objective of NL2SQL translation is to convert a natural language query into an SQL query. 
 
 Although *seq2seq-based approaches* have shown good results on standard benchmarks, they may not perform well on more complex queries that demand an understanding of the database's specific structure and semantics. The main issue is that such complex queries require more training data on the target database, which is not generally provided in the benchmarks.
 
@@ -63,7 +63,7 @@ This is the approach taken by the GAR method.
 
 Given a set of sample SQL queries, GAR uses the following three steps to do the translation:
 
-1. **Generalization**: Use a set of generalization rules to generalize the sample queries to provide a good coverage for component-similar queries.
+1. **Generalization**: Use a set of generalization rules to generalize the sample queries to provide good coverage for component-similar queries.
 2. **SQL2NL**: Translate the sample and generalized SQL queries to NL expressions called dialects.
 3. **Learning-to-rank**: Rank the dialect expressions based on the semantic similarity with a given NL query and find the closest one and hence the SQL query as the translation result.
 
@@ -113,8 +113,8 @@ $ bash train_pipeline.sh <dataset_name> <train_data_path> <dev_data_path> <table
 
 The training script will create the directory `saved_models` in the current directory. Training artifacts like checkpoints will be stored in this directory.
 
-The training includes four phasees:
-1. Retrieval model training data generation. <em>Please note that this phase expects to take some time to generate a large set of SQL-dialect pairs for each training databases.</em>
+The training includes four phases:
+1. Retrieval model training data generation. <em>Please note that this phase expects to take some time to generate a large set of SQL-dialect pairs for each training database.</em>
 2. Retrieval model training
 3. Re-ranking model training data generation
 4. Re-ranking model training
@@ -152,7 +152,7 @@ Unpack the model checkpoints and the corresponding generalized queries with the 
 ```
 
 ### Evaluation
-The evaluation script is located in root directory `test_pipeline.sh`.
+The evaluation script is located in the root directory `test_pipeline.sh`.
 You can run it with:
 ```
 $ bash test_pipeline.sh <dataset_name>  <test_file_path> <test_gold_sql_file> <table_path> <db_dir>
@@ -191,4 +191,4 @@ Please cite it if you use GenSQL in your work:
 ## Contributing
 This project welcomes contributions and suggestions 👍. 
 
-If you find bugs in our code, encounter problems when running the code, or have suggestions for GAR, please submit an issue, or reach out to me (fanyuankai@fudan.edu.cn)!
+If you find bugs in our code, encounter problems when running the code, or have suggestions for GAR, please submit an issue or reach out to me (fanyuankai@fudan.edu.cn)!
